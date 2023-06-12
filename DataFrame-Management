@@ -1,10 +1,13 @@
 # Library init ----------------------------------------------------------
 
-library(readr)
-library(dplyr)
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(scales)
 
 # Dataframe init ----------------------------------------------------------
 
+per_capita_energy_use <- read_csv("Dataframes/per-capita-energy-use.csv")
 coin_Aave <- read_csv("Dataframes/coin_Aave.csv")
 coin_BinanceCoin <- read_csv("Dataframes/coin_BinanceCoin.csv")
 coin_Bitcoin <- read_csv("Dataframes/coin_Bitcoin.csv")
@@ -29,7 +32,7 @@ coin_Uniswap <- read_csv("Dataframes/coin_Uniswap.csv")
 coin_WrappedBitcoin <- read_csv("Dataframes/coin_WrappedBitcoin.csv")
 coin_XRP <- read_csv("Dataframes/coin_XRP.csv")
 
-# Draframe Cleaning ----------------------------------------------------------
+# Dataframe Cleaning ----------------------------------------------------------
 
 coins_ALL_Vector <- c(list(coin_Aave),
                       list(coin_BinanceCoin),
@@ -58,6 +61,54 @@ coins_ALL_Vector <- c(list(coin_Aave),
 
 
 
-coins_ALL_DF = data.frame()
+coins_ALL_DF <- data.frame()
 for (DF in coins_ALL_Vector) {
   coins_ALL_DF <- rbind(coins_ALL_DF,DF)}
+coins_ALL_DF %>% mutate(Date=as.Date(Date, format = "%y-%m-%d"))
+
+
+Power_DF <- data.frame()
+Power_DF <- na.omit(per_capita_energy_use)
+Power_DF <- filter(Power_DF, Year %in% c(seq(2013,2021,1)))
+
+Difference_DF <- data.frame()
+Difference_DF <- Power_DF 
+
+# Visualization  ----------------------------------------------------------
+
+Co <- coins_ALL_DF %>% 
+  group_by(Date = lubridate::floor_date(Date, 'year')) %>%
+  summarize(Avg_Value = (mean(High)+mean(Low))/2) %>% 
+  ggplot() +
+  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="Black",fill="Red") + 
+  labs(y="Valor Promedio de las criptomonedas", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  ggtitle("Promedio del valor de las crypto monedas por año")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+
+Cv <- coins_ALL_DF %>% 
+  group_by(Date = lubridate::floor_date(Date, 'year')) %>%
+  summarize(Volume = mean(Volume)) %>% 
+  ggplot() +
+  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="Black",fill="Green") + 
+  labs(y="Volumen Promedio de transacciones", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  scale_y_log10(label=label_log())+
+  ggtitle("Promedio de transacciones por año")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+
+Pw <- Power_DF %>% 
+  group_by(Year) %>%
+  summarize(Avg_Consumption = mean(`Primary energy consumption per capita (kWh/person)`)) %>% 
+  ggplot() +
+  geom_col(aes(x = as.character(Year), y = Avg_Consumption),color="Black",fill="Blue") + 
+  labs(y="Consumo promedio de energia per capita (kWh/persona) ", x="Años")+
+  ggtitle("Promedio de consumo de energia por año")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+
+# Comparison  ----------------------------------------------------------
+
+Cv
+Pw
+Co
+grid.arrange(Co,Cv, Pw, ncol = 2)
