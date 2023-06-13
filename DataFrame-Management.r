@@ -74,6 +74,17 @@ Power_DF <- filter(Power_DF, Year %in% c(seq(2013,2021,1)))
 Difference_DF <- data.frame()
 Difference_DF <- Power_DF 
 
+# Summary  ----------------------------------------------------------
+
+summary(coins_ALL_DF)
+nrow(coins_ALL_DF)
+ncol(coins_ALL_DF)
+
+summary(Power_DF)
+nrow(Power_DF)
+ncol(Power_DF)
+
+
 # Visualization  ----------------------------------------------------------
 
 Co <- coins_ALL_DF %>% 
@@ -81,7 +92,7 @@ Co <- coins_ALL_DF %>%
   summarize(Avg_Value = (mean(High)+mean(Low))/2) %>% 
   ggplot() +
   geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="Black",fill="Red") + 
-  labs(y="Valor Promedio de las criptomonedas", x="Años")+
+  labs(y="Valor Promedio de las criptomonedas (USD) ", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Promedio del valor de las crypto monedas por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
@@ -106,6 +117,5 @@ Pw <- Power_DF %>%
   ggtitle("Promedio de consumo de energia por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
-# Comparison  ----------------------------------------------------------
 
 
