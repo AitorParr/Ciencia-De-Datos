@@ -1,0 +1,79 @@
+---
+title: "InformeProyecto"
+author: "Moises Berrios, Diego De Sousa, Gabriela Machado, Aitor Parrilla"
+date: "2023-06-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source('DataFrame-Management.r')
+```
+<!--
+TODOs: 
+1. [ ] mejorar la parte I, enfocarla segun lo que se pide en el enunciado
+2. [ ] parte II: ir explicando los graficos, segun lo que se pide
+-->
+## Parte I
+
+``` 
+- [ ] La primera parte del informe debe ser una descripción sencillo de los datos que utilizan. Fuente, conceptos pertinentes, definiciones de indicadores, cantidad de observaciones, cantidad de variables, valores faltantes.
+
+ Si deben realizar algún cálculo adicional con los datos que importaron, deben describir el cálculo realizado y hacer referencia a la fuente en la que se basaron.
+
+ Nota: el objetivo de esta parte es contextualizar al “lector” por lo que no deben extenderse mucho, pero sí es importante asegurarse de que se explica todo lo necesario para entender el resto del informe.
+``` 
+
+**PLANTEAMIENTO DEL PROBLEMA**
+El progresivo desarrollo tecnológico, particularmente en los últimos veinte años, ha tenido un gran impacto sobre la biósfera y la sociedad en general. Ahora que nos encontramos ante la transición del dinero físico al dinero digital, es preciso evaluar las consecuencias de un cambio tan significativo. 
+Lo cierto es que, si bien las criptomonedas brindan la oportunidad de acceder a un sistema transparente, descentralizado y seguro para efectuar transacciones, también representan un importante elemento a considerar cuando nos referimos al aumento del consumo eléctrico mundial. 
+De acuerdo a la Oficina de Política, Ciencia y Tecnología (2022), perteneciente al departamento del gobierno de los Estados Unidos, 
+
+Casi todo el consumo de electricidad de los criptoactivos es impulsado por los mecanismos de consenso: la tecnología de contabilidad distribuida (DLT) utilizada para minar y verificar los criptoactivos. El mecanismo de consenso dominante se llama Prueba de Trabajo (PoW), que es utilizado por las cadenas de bloques Bitcoin y Ethereum. Bitcoin y Ether combinados representan más del 60% de la capitalización total del mercado de los criptoactivos. El mecanismo PoW está diseñado para requerir más poder de cómputo a medida que más entidades intentan validar transacciones para obtener recompensas en monedas, y esta característica ayuda a desincentivar a los actores malintencionados de atacar la red. A partir de agosto de 2022, se estima que Bitcoin representa del 60% al 77% del consumo total de electricidad de los criptoactivos a nivel mundial, y Ethereum representa del 20% al 39%.
+
+La eficiencia energética de estas máquinas ha aumentado, no obstante, el consumo eléctrico continúa aumentando. Asimismo, esto implica grandes emisiones CO2, uno de los principales gases responsables del efecto invernadero. Según lo investigado por Apraez et al. (2022), el Bitcoin es un claro ejemplo del impacto ambiental de las criptomonedas: 
+En  los  últimos  dos  años,  el  aumento  histórico  de bitcoin  ha  provocado  que  las emisiones aumenten en más de 40 millones de toneladas, lo que equivale a 8,9 millones de automóviles agregados a las calles, impulsando el calentamiento global por encima de 2°C (p. 4). 
+
+El impacto ambiental de estos criptoactivos no es un factor que la mayoría de las personas consideran al momento de invertir, sin embargo, esto se debe en gran medida al desconocimiento y lo poco tangible que resulta dicho fenómeno. Asimismo, existen pocas fuentes que permitan establecer una relación entre el consumo eléctrico y las muchas criptomonedas en existencia. Por ende, el presente proyecto plantea la siguiente pregunta: ¿Cuál es la relación entre el consumo energético y las principales criptomonedas del mercado? 
+
+**PROPUESTA**
+El presente proyecto propone la elaboración de un sistema a través del cual el usuario pueda visualizar gráficamente el impacto de las transacciones con  criptomonedas en el consumo eléctrico mundial. Para ello se utilizaron dos bases de datos: 
+Histórico de precios de criptomonedas. Este dataset, obtenido de Kaggle, contiene información sobre las principales criptomonedas en el mercado actual. Para propósitos de este trabajo, se dio prioridad a la información concerniente al volumen de transacciones. 
+Uso energético per cápita. Our World Data se dedica a publicar datos relacionados a los principales problemas del mundo, siendo el alza en el consumo eléctrico uno de ellos. Dicho dataset incluye el uso energético mundial por persona hasta el año 2021. 
+Estas se encuentran disponibles en el repositorio de GitHub: <https://github.com/AitorParr/Ciencia-De-Datos>
+
+**JUSTIFICACIÓN**
+La orientación al progreso y al desarrollo tecnológico son dos aspectos que caracterizan a la sociedad contemporánea, no obstante, esto constituye un problema cuando se desestima el impacto ambiental de sus hazañas. A pesar de que las ventajas de las transacciones con criptomonedas son muchas y representan el futuro de la economía mundial, el alto costo energético es imposible de ignorar. 
+En tal sentido, es preciso tomar conciencia, adoptar alternativas y realizar mejoras. El presente proyecto pretende dar un primer paso, aportando una visualización clave del problema que motive al usuario a seguir investigando y a tomar decisiones más conscientes al momento de invertir en activos digitales. 
+
+## Parte II
+
+``` 
+- [ ] En esta segunda parte desarrollarán el tópico seleccionado; deben argumentar por qué es relevante (justificación), y exponer los hallazgos iniciales o cuestiones que plantean.
+
+El informe debe tener al menos 3 gráficos en total, y al menos 1 de ellos debe presentar una comparación (entre países, sexo, empresas, u otras categorías).
+
+Importante: los bloques de código que utilicen para gráficos, cálculos o resúmenes en el informe, tienen que verse en el documento.
+
+Tengan en mente que el informe debería concluir con interrogantes planteadas que se espera puedan ser estudiadas o analizadas con mayor profundidad, y que estas deben ser inducidas con el análisis exploratorio que realicen.
+
+En resumen, (1) deberán buscar los datos, (2) procesarlos en R (conservando el script y la base de datos final), y (3) realizar el informe con las visualizaciones. El proceso debe ser reproducible de inicio a fin.
+
+Deben apoyar la narrativa usando códigos para imprimir datos/resultados (resúmenes estadísticos, cantidad de observaciones, columnas, etc.) en los casos que sea pertinente (en la Parte I, por ejemplo, al describir los datos).
+``` 
+
+> En el apartado de los graficos, se muestran los siguientes:
+
+```{r graficos, echo=FALSE}
+Cv
+Pw
+Co
+
+```
+
+> Asi, viendo como resumen de los graficos:
+
+```{r graficosGrid, echo=FALSE}
+grid.arrange(Co,Cv, Pw, ncol = 2)
+
+```

@@ -108,7 +108,4 @@ Pw <- Power_DF %>%
 
 # Comparison  ----------------------------------------------------------
 
-Cv
-Pw
-Co
-grid.arrange(Co,Cv, Pw, ncol = 2)
+
