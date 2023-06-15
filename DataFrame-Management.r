@@ -85,6 +85,8 @@ volumen_df_summary <- coins_ALL_DF %>%
   group_by(Date = lubridate::floor_date(Date, 'year')) %>%
   summarize(Volume = mean(Volume))
 
+power_df_summary$Year <- as.Date(power_df_summary$Year)
+
 # Summary  ----------------------------------------------------------
 
 summary(coins_ALL_DF)
@@ -117,17 +119,28 @@ volumen <- volumen_df_summary %>%
 
 power <- power_df_summary %>% 
   ggplot() +
-  geom_col(aes(x = as.character(Year), y = Avg_Consumption),color="Black",fill='Blue') + 
+  geom_col(aes(x = Year, y = Avg_Consumption),color="Black",fill='Blue') + 
   labs(y="Consumo promedio de energia per capita (kWh/persona) ", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Promedio de consumo de energia por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
-power_value <-  ggplot() + 
-  geom_line(data=power_df_summary, aes(x=as.character(Year), y=Avg_Consumption, group=1), color='blue') + 
-  geom_line(data=coins_df_summary, aes(x=as.character(Date), y=Avg_Value ,group=2), color='red')+
-  labs(y="Consumo(Azul) vs Precio(Rojo)", x="Años")
 
-power_volume <-  ggplot() + 
-  geom_line(data=power_df_summary, aes(x=as.character(Year), y=Avg_Consumption, group=1), color='blue') + 
-  geom_line(data=volumen_df_summary, aes(x=as.character(Date), y=Volume ,group=2), color='green')+
-  labs(y="Consumo(Azul) vs Volumen de transacciones(Verde)", x="Años")
+power_value <-  right_join(power_df_summary,coins_df_summary,by=c("Year"="Date")) %>% 
+  ggplot() + 
+  geom_line(aes(x=Avg_Value,y=Avg_Consumption))+
+  labs(y="Consumo Promedio", x="Valor Promedio")
+
+power_volume <-  right_join(power_df_summary,volumen_df_summary,by=c("Year"="Date")) %>% 
+  ggplot() + 
+  geom_line(aes(x=Volume,y=Avg_Consumption))+
+  labs(y="Consumo Promedio", x="Transacciones Promedio")
+
+
+# Check  ----------------------------------------------------------
+
+value
+power
+volumen
+power_value
+power_volume
