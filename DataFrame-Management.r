@@ -67,12 +67,23 @@ for (DF in coins_ALL_Vector) {
 coins_ALL_DF %>% mutate(Date=as.Date(Date, format = "%y-%m-%d"))
 
 
-Power_DF <- data.frame()
-Power_DF <- na.omit(per_capita_energy_use)
-Power_DF <- filter(Power_DF, Year %in% c(seq(2013,2021,1)))
+power_df <- data.frame()
+power_df <- na.omit(per_capita_energy_use)
+power_df <- filter(power_df, Year %in% c(seq(2013,2021,1)))
 
-Difference_DF <- data.frame()
-Difference_DF <- Power_DF 
+coins_df_summary <- coins_ALL_DF %>% 
+  group_by(Date = lubridate::floor_date(Date, 'year')) %>%
+  summarize(Avg_Value = (mean(High)+mean(Low))/2)
+
+power_df_summary <- power_df %>% 
+  group_by(Year) %>%
+  summarize(Avg_Consumption = mean(`Primary energy consumption per capita (kWh/person)`)) 
+
+power_df_summary$Year <- paste(power_df_summary$Year,"01","01", sep="-")
+
+volumen_df_summary <- coins_ALL_DF %>% 
+  group_by(Date = lubridate::floor_date(Date, 'year')) %>%
+  summarize(Volume = mean(Volume))
 
 # Summary  ----------------------------------------------------------
 
@@ -80,26 +91,22 @@ summary(coins_ALL_DF)
 nrow(coins_ALL_DF)
 ncol(coins_ALL_DF)
 
-summary(Power_DF)
-nrow(Power_DF)
-ncol(Power_DF)
+summary(power_df)
+nrow(power_df)
+ncol(power_df)
 
 
 # Visualization  ----------------------------------------------------------
 
-Co <- coins_ALL_DF %>% 
-  group_by(Date = lubridate::floor_date(Date, 'year')) %>%
-  summarize(Avg_Value = (mean(High)+mean(Low))/2) %>% 
+value <- coins_df_summary %>% 
   ggplot() +
   geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="Black",fill="Red") + 
-  labs(y="Valor Promedio de las criptomonedas (USD) ", x="Años")+
+  labs(y="Valor Promedio de las criptomonedas(USD)", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  ggtitle("Promedio del valor de las crypto monedas por año")+
+  ggtitle("Promedio del valor de las crypto monedas por año ")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
-Cv <- coins_ALL_DF %>% 
-  group_by(Date = lubridate::floor_date(Date, 'year')) %>%
-  summarize(Volume = mean(Volume)) %>% 
+volumen <- volumen_df_summary %>%  
   ggplot() +
   geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="Black",fill="Green") + 
   labs(y="Volumen Promedio de transacciones", x="Años")+
@@ -108,14 +115,19 @@ Cv <- coins_ALL_DF %>%
   ggtitle("Promedio de transacciones por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
-Pw <- Power_DF %>% 
-  group_by(Year) %>%
-  summarize(Avg_Consumption = mean(`Primary energy consumption per capita (kWh/person)`)) %>% 
+power <- power_df_summary %>% 
   ggplot() +
-  geom_col(aes(x = as.character(Year), y = Avg_Consumption),color="Black",fill="Blue") + 
+  geom_col(aes(x = as.character(Year), y = Avg_Consumption),color="Black",fill='Blue') + 
   labs(y="Consumo promedio de energia per capita (kWh/persona) ", x="Años")+
   ggtitle("Promedio de consumo de energia por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
+power_value <-  ggplot() + 
+  geom_line(data=power_df_summary, aes(x=as.character(Year), y=Avg_Consumption, group=1), color='blue') + 
+  geom_line(data=coins_df_summary, aes(x=as.character(Date), y=Avg_Value ,group=2), color='red')+
+  labs(y="Consumo(Azul) vs Precio(Rojo)", x="Años")
 
-
+power_volume <-  ggplot() + 
+  geom_line(data=power_df_summary, aes(x=as.character(Year), y=Avg_Consumption, group=1), color='blue') + 
+  geom_line(data=volumen_df_summary, aes(x=as.character(Date), y=Volume ,group=2), color='green')+
+  labs(y="Consumo(Azul) vs Volumen de transacciones(Verde)", x="Años")
