@@ -139,8 +139,8 @@ power_volume <-  right_join(power_df_summary,volumen_df_summary,by=c("Year"="Dat
 
 # Check  ----------------------------------------------------------
 
-value
-power
-volumen
-power_value
-power_volume
+# value
+# power
+# volumen
+# power_value
+# power_volume
