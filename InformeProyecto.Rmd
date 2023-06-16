@@ -14,8 +14,8 @@ source('DataFrame-Management.r')
 
 ### PLANTEAMIENTO DEL PROBLEMA
 
->El progresivo desarrollo tecnológico, particularmente en los últimos veinte años, ha tenido un gran impacto sobre la biósfera y la sociedad en general. Ahora que nos encontramos ante la transición del dinero físico al dinero digital, es preciso evaluar las consecuencias de un cambio tan significativo. 
->Lo cierto es que, si bien las criptomonedas brindan la oportunidad de acceder a un sistema transparente, descentralizado y seguro para efectuar transacciones, también representan un importante elemento a considerar cuando nos referimos al aumento del consumo eléctrico mundial. 
+>El progresivo desarrollo tecnológico, particularmente en los últimos veinte años, ha tenido un gran impacto sobre la biósfera y la sociedad en general. Ahora que se encuentra socialmente, ante la transición del dinero físico al dinero digital, es preciso evaluar las consecuencias de un cambio tan significativo. 
+>Lo cierto es que, si bien las criptomonedas brindan la oportunidad de acceder a un sistema transparente, descentralizado y seguro para efectuar transacciones, también representan un importante elemento a considerar cuando se refiere, al aumento del consumo eléctrico mundial. 
 De acuerdo a la Oficina de Política, Ciencia y Tecnología (2022), perteneciente al departamento del gobierno de los Estados Unidos: 
 >
 >>*Casi todo el consumo de electricidad de los cripto activos es impulsado por los mecanismos de consenso: la tecnología de contabilidad distribuida (DLT) utilizada para minar y verificar los cripto activos. El mecanismo de consenso dominante se llama Prueba de Trabajo (PoW), que es utilizado por las cadenas de bloques Bitcoin y Ethereum. Bitcoin y Ether combinados representan más del 60% de la capitalización total del mercado de los cripto activos. El mecanismo PoW está diseñado para requerir más poder de cómputo a medida que más entidades intentan validar transacciones para obtener una pequeña comisión en monedas, y esta característica ayuda a desincentivar a los actores malintencionados de atacar la red. A partir de agosto de 2022, se estima que Bitcoin representa del 60% al 77% del consumo total de electricidad de los cripto activos a nivel mundial, y Ethereum representa del 20% al 39%.*
@@ -63,7 +63,7 @@ De acuerdo a la Oficina de Política, Ciencia y Tecnología (2022), pertenecient
 
 ![](./assets/imageDataFrame2.png)
 
->A través de los gráficos y el resumen estadístico obtenido, surgen preguntas acerca del auge de las criptomonedas, el uso de electricidad a nivel mundial y la relación entre ambos elementos. En tal sentido, nos cuestionamos, ¿por qué se da un aumento en el consumo y de las transacciones?
+>A través de los gráficos y el resumen estadístico obtenido, surgen preguntas acerca del auge de las criptomonedas, el uso de electricidad a nivel mundial y la relación entre ambos elementos. En tal sentido, al cuestionarse, ¿por qué se da un aumento en el consumo y de las transacciones?
 
 >Sobre el aumento del valor de las criptomonedas: Desde el 2013, resulta evidente el incremento en la demanda del uso de las criptomonedas. Tanto a las personas como a las empresas perciben un beneficio al utilizarlas, sobre todo en relación al intercambio de bienes y servicios, rapidez en cambio de cualquier tipo de activos de forma inmediata y el bajo porcentaje en comisiones por transacción, etc.
 
@@ -74,7 +74,7 @@ value
 
 ![](./assets/code1.png)
 
->En cuanto al volumen de transacciones con criptomonedas, los datos indican un aumento significativo de estas. Para el año 2017 es donde se evidencia un salto importante en las transacciones. Se pueden establecer muchas hipótesis que la explican, sin embargo, en nuestro caso destacaremos el alto consumo, sus beneficios y el incremento en su publicidad como posibles razones. Como se evidencia en el gráfico, el uso de los cripto activos se ha reforzado desde entonces. 
+>En cuanto al volumen de transacciones con criptomonedas, los datos indican un aumento significativo de estas. Para el año 2017 es donde se evidencia un salto importante en las transacciones. Se pueden establecer muchas hipótesis que la explican, sin embargo, en nuestro caso, se destaca el alto consumo, sus beneficios y el incremento en su publicidad como posibles razones. Como se evidencia en el gráfico, el uso de los cripto activos se ha reforzado desde entonces. 
 
 ```{r grafico3, echo=FALSE}
 volumen
@@ -99,17 +99,20 @@ power_value
 
 >Existe una pronunciada pendiente positiva en la función, no obstante, hasta cierto punto esta pierde su fuerza. Una de las muchas razones se debe a la estabilidad del mercado y también la situación del aumento de las tasa de los EEUU, factores que alteraron tanto su valor promedio como su consumo,porque las criptomonedas van de la mano con el crecimiento de la economía de los EEUU. 
 
->Finalmente, establecimos, a través de un gráfico de línea, la relación entre el volúmen de transacciones y el consumo eléctrico per cápita. Como puede observarse, existe una pendiente positiva muy pronunciada a lo largo del tiempo como consecuencia del aumento de su uso y su popularidad. La ligera variación y posterior estabilidad de la pendiente se debe al aumento de ambas variables. Es decir, a medida que se realizan más transacciones con criptomonedas, el consumo eléctrico aumenta en igual proporción.
+>Finalmente, se estableció, a través de un gráfico de línea, la relación entre el volúmen de transacciones y el consumo eléctrico per cápita. Como puede observarse, existe una pendiente positiva muy pronunciada a lo largo del tiempo como consecuencia del aumento de su uso y su popularidad. La ligera variación y posterior estabilidad de la pendiente se debe al aumento de ambas variables. Es decir, a medida que se realizan más transacciones con criptomonedas, el consumo eléctrico aumenta en igual proporción.
 
 ```{r grafico5, echo=FALSE}
 power_volume
 
 ```
 
->La evidente relación entre el consumo eléctrico y las transacciones con criptomonedas no es un tema tan sencillo como quizás pueda inferirse de este breve informe exploratorio. En tal sentido, es indispensable que planteemos algunas preguntas para avanzar en otra ocasión con el estudio del impacto ambiental de los cripto activos: ¿Cómo se compara el consumo eléctrico por transacciones con criptomonedas al consumo eléctrico total de países como China, EEUU o Rusia? ¿Cuál es la totalidad de CO2 emitido a la atmósfera como producto de esta actividad? ¿Cómo se compara el impacto de las criptomonedas con otras industrias contaminantes? 
+>La evidente relación entre el consumo eléctrico y las transacciones con criptomonedas no es un tema tan sencillo como quizás pueda inferirse de este breve informe exploratorio. En tal sentido, es indispensable que se planteen algunas preguntas para avanzar en otra ocasión con el estudio del impacto ambiental de los cripto activos: ¿Cómo se compara el consumo eléctrico por transacciones con criptomonedas al consumo eléctrico total de países como China, EEUU o Rusia? ¿Cuál es la totalidad de CO2 emitido a la atmósfera como producto de esta actividad? ¿Cómo se compara el impacto de las criptomonedas con otras industrias contaminantes? 
 
 
 ## REFERENCIAS 
 
 - [The White House. (2022, Septiembre 08). Climate and Energy Implications of Crypto-Assets in the United States.]( https://www.whitehouse.gov/ostp/news-updates/2022/09/08/fact-sheet-climate-and-energy-implications-of-crypto-assets-in-the-united-states/)
 - [Apraez Muñoz, J. J., Guaitarilla Moncayo, D. F., & Muñoz Gómez, C. A. (2022). Análisis del impacto ambiental por el consumo energético en la producción del bitcoin a nivel mundial. LOGINN Investigación Científica Y Tecnológica, 6(2).]( https://doi.org/10.23850/25907441.4800)
+- [Cryptocurrency Historical Prices | Kaggle](https://www.kaggle.com/datasets/sudalairajkumar/cryptocurrencypricehistory?resource=download)
+- [Energy Production and Consumption - Our World in Data](https://ourworldindata.org/energy-production-consumption)
+- [GitHub: Proyecto de Ciencia de datos](https://github.com/AitorParr/Ciencia-De-Datos/tree/main)
