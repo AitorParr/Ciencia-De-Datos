@@ -1,5 +1,5 @@
 ---
-title: "InformeProyecto"
+title: "Crecimiento del consumo de energia electrica por el uso de criptomonedas"
 author: "Moises Berrios, Diego De Sousa, Gabriela Machado, Aitor Parrilla"
 date: "2023-06-13"
 output: html_document
