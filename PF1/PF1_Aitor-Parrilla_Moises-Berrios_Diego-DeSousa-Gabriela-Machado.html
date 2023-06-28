@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-06-28" />
 
-<title>Crecimiento del consumo de energia electrica por el uso de criptomonedas</title>
+<title>Crecimiento del consumo de energía eléctrica y emisiones de CO2 por el uso de criptomoneda</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,8 +350,8 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Crecimiento del consumo de energia
-electrica por el uso de criptomonedas</h1>
+<h1 class="title toc-ignore">Crecimiento del consumo de energía
+eléctrica y emisiones de CO2 por el uso de criptomoneda</h1>
 <h4 class="author">Aitor-Parrilla_Moises-Berrios_Diego-DeSousa_Gabriela-Machado</h4>
 <h4 class="date">2023-06-28</h4>
 
@@ -415,8 +415,18 @@ criptomonedas (valores y transacciones)</p>
 <h3>PROPUESTA</h3>
 <blockquote>
 <p>El presente documento propone del desarrollo de un proyecto con
-titulo “Crecimiento del consumo de energia electrica por el uso de
-criptomonedas” LOs datos a utilizar seran:</p>
+titulo “Crecimiento del consumo de energía eléctrica y emisiones de CO2
+por el uso de criptomoneda” que constara en un sistema a través del cuál
+se pueda visualizar gráficamente el impacto del creciente uso de las
+criptomonedas. Dado el enfoque ambiental de esta propuesta, se hará
+énfasis en el aumento del consumo eléctrico y las emisiones de CO2;
+tomando como referencia algunos de los países con mayores tasas de
+consumo y la principal criptomoneda del mercado: Bitcoin.</p>
+</blockquote>
+</div>
+<div id="descripcion-de-los-datos" class="section level3">
+<h3>DESCRIPCION DE LOS DATOS</h3>
+<blockquote>
 <ol style="list-style-type: decimal">
 <li><p>Histórico de precios de criptomonedas. Este dataset, obtenido de
 Kaggle, contiene información sobre las principales criptomonedas en el
@@ -426,18 +436,14 @@ se dedica a publicar datos relacionados a los principales problemas del
 mundo, siendo el alza en el consumo eléctrico uno de ellos. Dicho
 dataset incluye el uso energético mundial por persona hasta el año
 2021.</p></li>
+<li><p>Emisiones de CO2 y otros gases invernaderos. Our World Data
+publicó este dataset en 2022, siendo un registro de las emisiones de
+carbono por país comenzando desde el año 1850.</p></li>
+<li><p>Huella de carbono y consumo de energía del Bitcoin. Dicho
+dataset, contenido en el repositorio académico de ScienceDirect,
+recopila las emisiones de carbono relacionadas al Bitcoin desde el
+2021.</p></li>
 </ol>
-</blockquote>
-<blockquote>
-<p>Las bases de datos de criptomonedas poseen diez variables. Estas son:
-SNo, Name, Symbol, Date, High, Low, Open, Close, Volume y Marketcap.
-Mientras que per_capita_energy_use tiene cuatro variables: Entity, Code,
-Year y Primary energy consumption per capita (kWh/person). Para el
-propósito de este proyecto, se le dara prioridad a las variables
-relacionadas con el valor y volúmen de transacciones de criptomonedas, y
-también al consumo de energía per capita. Esto con la finalidad de
-establecer una relación que permita comprender -aunque de manera muy
-básica- el impacto de los cripto activos en términos ambientales.</p>
 </blockquote>
 </div>
 <div id="justificación" class="section level3">
@@ -467,14 +473,20 @@ inferencial. Principalmente se hara uso de la correlacion y la regresion
 para demostrar o negar la hipotesis planteada.</p>
 <p>Las herramientas a utilizar para la limpieza y manejo seran Rstudio
 con las librerias Tidyverse, ggplot2, gridExtra. Los pasos a seguir para
-cumplir el objetivo seran: <em>Limpiar las bases de datos de cualquier
-dato que este por fuera de los años 2013 a 2021 </em>Calcular el
-promedio mundial de: numero de transacciones,valor de la moneda,consumo
-de energia per capita <em>Visualizar graficamente estos crecimientos.
-</em>Calcular la correlacion entre promedio mundial de
-transacciones,promedio mudial de valor y promedio mundial de consumo
-*Graficar una relacion entre consumo de energia y valor de cripto conla
-intencion de mostrar graficamente la correlacion</p>
+cumplir el objetivo seran:</p>
+<ol style="list-style-type: decimal">
+<li><p>Limpiar las bases de datos de cualquier dato que este por fuera
+de los años 2013 a 2021</p></li>
+<li><p>Calcular el promedio mundial de: numero de transacciones,valor de
+la moneda,consumo de energia per capita,Emisiones CO2 Visualizar
+graficamente estos crecimientos.</p></li>
+<li><p>Calcular la correlacion entre promedio mundial de
+transacciones,promedio mudial de valor , promedio mundial de consumo y
+Emisiones CO2</p></li>
+<li><p>Graficar una relacion entre consumo de energia, valor de cripto,
+emsiones CO2 y Volume de trasacciones con la intencion de mostrar
+graficamente la correlacion</p></li>
+</ol>
 </blockquote>
 </div>
 </div>
@@ -491,10 +503,6 @@ producción del bitcoin a nivel mundial. LOGINN Investigación Científica
 Y Tecnológica, 6(2).</a></li>
 <li><a href="https://www.kaggle.com/datasets/sudalairajkumar/cryptocurrencypricehistory?resource=download">Cryptocurrency
 Historical Prices | Kaggle</a></li>
-<li><a href="https://ourworldindata.org/energy-production-consumption">Energy
-Production and Consumption - Our World in Data</a></li>
-<li><a href="https://github.com/AitorParr/Ciencia-De-Datos/tree/main">GitHub:
-Proyecto de Ciencia de datos</a></li>
 </ul>
 </div>
 
