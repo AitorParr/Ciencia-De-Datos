@@ -4,10 +4,11 @@ library(gridExtra)
 library(tidyverse)
 library(ggplot2)
 library(scales)
+library(readxl)
+library(zoo)
 
 # Dataframe init ----------------------------------------------------------
 
-per_capita_energy_use <- read_csv("Dataframes/per-capita-energy-use.csv")
 coin_Aave <- read_csv("Dataframes/coin_Aave.csv")
 coin_BinanceCoin <- read_csv("Dataframes/coin_BinanceCoin.csv")
 coin_Bitcoin <- read_csv("Dataframes/coin_Bitcoin.csv")
@@ -31,6 +32,7 @@ coin_USDCoin <- read_csv("Dataframes/coin_USDCoin.csv")
 coin_Uniswap <- read_csv("Dataframes/coin_Uniswap.csv")
 coin_WrappedBitcoin <- read_csv("Dataframes/coin_WrappedBitcoin.csv")
 coin_XRP <- read_csv("Dataframes/coin_XRP.csv")
+MES_0423 <- read_csv("Dataframes/MES_0423.csv")
 
 # Dataframe Cleaning ----------------------------------------------------------
 
@@ -61,81 +63,148 @@ coins_ALL_Vector <- c(list(coin_Aave),
 
 
 
-coins_ALL_DF <- data.frame()
+COINS_ALL_DF <- data.frame()
 for (DF in coins_ALL_Vector) {
-  coins_ALL_DF <- rbind(coins_ALL_DF,DF)}
-coins_ALL_DF %>% mutate(Date=as.Date(Date, format = "%y-%m-%d"))
+  COINS_ALL_DF <- rbind(COINS_ALL_DF,DF)}
+COINS_ALL_DF <- COINS_ALL_DF %>% mutate(Date=as.yearmon(Date, format = "%y-%m-%d"))
+
+COINS_ALL_DF_VOL <- COINS_ALL_DF %>% 
+  group_by(Name) %>% 
+  summarise(Volume=sum(Volume)) 
+
+COINS_ALL_DF_VOL <- COINS_ALL_DF_VOL %>% mutate(Percentage = 100*Volume/sum(Volume))
+
+coins <- COINS_ALL_DF[COINS_ALL_DF$Name %in% c('Ethereum','Bitcoin','Tether'),]
+
+power_df <- MES_0423 
+names(power_df) <- power_df[8,]
+colnames(power_df)[5] <- "Amount"
+power_df <- power_df[-c(1:8),]
+power_df <- power_df %>%
+  mutate(Time = Time %>% 
+           str_replace_all(" ", "-"))
+power_df <- power_df %>% mutate(Time=as.yearmon(Time,"%b-%Y"))
+power_df <- power_df %>% 
+            filter(!(Country %in% c("IEA Total","OECD Americas","OECD Asia Oceania","OECD Europe","OECD Total"))) %>% 
+            filter(Product == "Total Combustible Fuels")
+
+power_df_total <- MES_0423 
+names(power_df_total) <- power_df_total[8,]
+colnames(power_df_total)[5] <- "Amount"
+power_df_total <- power_df_total[-c(1:8),]
+power_df_total <- power_df_total %>%
+  mutate(Time = Time %>% 
+           str_replace_all(" ", "-"))
+power_df_total <- power_df_total %>% mutate(Time=as.yearmon(Time,"%b-%Y"))
+power_df_total <- power_df_total %>% 
+  filter(!(Country %in% c("IEA Total","OECD Americas","OECD Asia Oceania","OECD Europe","OECD Total"))) %>% 
+  filter(Product == "Electricity" & Balance == "Final Consumption (Calculated)")
 
 
-power_df <- data.frame()
-power_df <- na.omit(per_capita_energy_use)
-power_df <- filter(power_df, Year %in% c(seq(2013,2021,1)))
+power_df <- power_df %>% 
+  group_by(Time,Product,Unit) %>% 
+  summarize(Avg_amount = sum(Amount))
 
-coins_df_summary <- coins_ALL_DF %>% 
-  group_by(Date = lubridate::floor_date(Date, 'year')) %>%
+power_df_total <- power_df_total %>% 
+  group_by(Time,Product,Unit) %>% 
+  summarize(Avg_amount = sum(Amount))
+
+value_df_summary <- coins %>% 
+  group_by(Date) %>%
   summarize(Avg_Value = (mean(High)+mean(Low))/2)
 
-power_df_summary <- power_df %>% 
-  group_by(Year) %>%
-  summarize(Avg_Consumption = mean(`Primary energy consumption per capita (kWh/person)`)) 
-
-power_df_summary$Year <- paste(power_df_summary$Year,"01","01", sep="-")
-
-volumen_df_summary <- coins_ALL_DF %>% 
-  group_by(Date = lubridate::floor_date(Date, 'year')) %>%
+volumen_df_summary <- coins %>% 
+  group_by(Date)  %>%
   summarize(Volume = mean(Volume))
 
-power_df_summary$Year <- as.Date(power_df_summary$Year)
+power_value_df <- left_join(value_df_summary,power_df,by=c("Date"="Time"))
 
+power_volume_df <- left_join(volumen_df_summary,power_df,by=c("Date"="Time"))
+
+power_total_value_df <- left_join(value_df_summary,power_df_total,by=c("Date"="Time"))
+
+power_total_volume_df <- left_join(volumen_df_summary,power_df_total,by=c("Date"="Time"))
 # Summary  ----------------------------------------------------------
 
 summary(coins_ALL_DF)
 nrow(coins_ALL_DF)
 ncol(coins_ALL_DF)
 
-summary(power_df)
-nrow(power_df)
-ncol(power_df)
-
 
 # Visualization  ----------------------------------------------------------
 
-value <- coins_df_summary %>% 
+value <- value_df_summary %>% 
   ggplot() +
-  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="Black",fill="Red") + 
+  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="black",fill="red")+ 
   labs(y="Valor Promedio de las criptomonedas(USD)", x="Años")+
-  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Promedio del valor de las crypto monedas por año ")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
 volumen <- volumen_df_summary %>%  
   ggplot() +
-  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="Black",fill="Green") + 
+  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="black",fill="green") + 
   labs(y="Volumen Promedio de transacciones", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  scale_y_log10(label=label_log())+
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE))+
   ggtitle("Promedio de transacciones por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
-power <- power_df_summary %>% 
+power <- power_df %>%  
   ggplot() +
-  geom_col(aes(x = Year, y = Avg_Consumption),color="Black",fill='Blue') + 
-  labs(y="Consumo promedio de energia per capita (kWh/persona) ", x="Años")+
+  geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="yellow") + 
+  labs(y="Energia Promedio Generada por Combustibles", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  ggtitle("Promedio de consumo de energia por año")+
+  ggtitle("Promedio de energia creada con fuentes combustibles por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
+power_total <- power_df_total %>%  
+  ggplot() +
+  geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="magenta") + 
+  labs(y="Energia Promedio Generada ", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  ggtitle("Promedio de energia creada con fuentes combustibles por año")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
-power_value <-  right_join(power_df_summary,coins_df_summary,by=c("Year"="Date")) %>% 
-  ggplot() + 
-  geom_line(aes(x=Avg_Value,y=Avg_Consumption))+
-  labs(y="Consumo Promedio", x="Valor Promedio")
+power_value <-power_value_df %>%  
+  ggplot() +
+  geom_point(aes(x = Avg_amount, y = Avg_Value),color="blue") + 
+  labs(y="Valor de cripto promedio", x="Energia Consumida")+
+  ggtitle("Promedio de energia creada vs Valor de cripto")+
+  stat_smooth(aes(x = Avg_amount, y = Avg_Value),method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
-power_volume <-  right_join(power_df_summary,volumen_df_summary,by=c("Year"="Date")) %>% 
-  ggplot() + 
-  geom_line(aes(x=Volume,y=Avg_Consumption))+
-  labs(y="Consumo Promedio", x="Transacciones Promedio")
+power_volume <-power_volume_df %>%  
+  ggplot() +
+  geom_point(aes(x = Avg_amount, y = Volume),color="orange") + 
+  labs(y="Volumen de transacciones promedio", x="Energia Consumida")+
+  ggtitle("Promedio de energia creada vs Volumen de transacciones")+
+  stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
+power_total_value <-power_total_value_df %>%  
+  ggplot() +
+  geom_point(aes(x = Avg_amount, y = Avg_Value),color="dark green") + 
+  labs(y="Valor de cripto promedio", x="Energia Consumida total")+
+  ggtitle("Promedio de energia creada total vs Valor de cripto")+
+  stat_smooth(aes(x = Avg_amount, y = Avg_Value),method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+
+power_total_volume <-power_total_volume_df %>%  
+  ggplot() +
+  geom_point(aes(x = Avg_amount, y = Volume),color="dark blue") + 
+  labs(y="Volumen de transacciones promedio", x="Energia Consumida total")+
+  ggtitle("Promedio de energia creada total vs Volumen de transacciones")+
+  stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
 # Check  ----------------------------------------------------------
 
