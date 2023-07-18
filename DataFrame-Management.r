@@ -206,6 +206,13 @@ power_total_volume <-power_total_volume_df %>%
               geom = "smooth")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
+#Correlation---------------------------------------------------------
+cor(power_value_df$Avg_Value,power_value_df$Avg_amount)
+cor(power_volume_df$Volume,power_volume_df$Avg_amount)
+
+cor(power_total_value_df$Avg_Value,power_total_value_df$Avg_amount)
+cor(power_total_volume_df$Volume,power_total_volume_df$Avg_amount)
+
 # Check  ----------------------------------------------------------
 
 # value
