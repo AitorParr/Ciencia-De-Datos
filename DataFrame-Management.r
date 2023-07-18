@@ -126,10 +126,13 @@ power_total_value_df <- left_join(value_df_summary,power_df_total,by=c("Date"="T
 power_total_volume_df <- left_join(volumen_df_summary,power_df_total,by=c("Date"="Time"))
 # Summary  ----------------------------------------------------------
 
-summary(coins_ALL_DF)
-nrow(coins_ALL_DF)
-ncol(coins_ALL_DF)
+summary(COINS_ALL_DF)
+nrow(COINS_ALL_DF)
+ncol(COINS_ALL_DF)
 
+summary(power_df)
+nrow(power_df)
+ncol(power_df)
 
 # Visualization  ----------------------------------------------------------
 
@@ -153,24 +156,24 @@ volumen <- volumen_df_summary %>%
 power <- power_df %>%  
   ggplot() +
   geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="yellow") + 
-  labs(y="Energia Promedio Generada por Combustibles", x="Años")+
+  labs(y="Energia Generada por Combustibles", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  ggtitle("Promedio de energia creada con fuentes combustibles por año")+
+  ggtitle("Energia creada con fuentes combustibles por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
 power_total <- power_df_total %>%  
   ggplot() +
   geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="magenta") + 
-  labs(y="Energia Promedio Generada ", x="Años")+
+  labs(y="Energia  Generada ", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  ggtitle("Promedio de energia creada con fuentes combustibles por año")+
+  ggtitle("Energia creada por año")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
 power_value <-power_value_df %>%  
   ggplot() +
   geom_point(aes(x = Avg_amount, y = Avg_Value),color="blue") + 
   labs(y="Valor de cripto promedio", x="Energia Consumida")+
-  ggtitle("Promedio de energia creada vs Valor de cripto")+
+  ggtitle("Energia creada por combustibles vs Valor de cripto promedio")+
   stat_smooth(aes(x = Avg_amount, y = Avg_Value),method = "lm",
               formula = y ~ x,
               geom = "smooth")+
@@ -179,8 +182,8 @@ power_value <-power_value_df %>%
 power_volume <-power_volume_df %>%  
   ggplot() +
   geom_point(aes(x = Avg_amount, y = Volume),color="orange") + 
-  labs(y="Volumen de transacciones promedio", x="Energia Consumida")+
-  ggtitle("Promedio de energia creada vs Volumen de transacciones")+
+  labs(y="Volumen de transacciones promedio", x="Energia Creada por combustibles")+
+  ggtitle("Energia creada por combustibles vs Volumen promedio de transacciones")+
   stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
               formula = y ~ x,
               geom = "smooth")+
@@ -190,7 +193,7 @@ power_total_value <-power_total_value_df %>%
   ggplot() +
   geom_point(aes(x = Avg_amount, y = Avg_Value),color="dark green") + 
   labs(y="Valor de cripto promedio", x="Energia Consumida total")+
-  ggtitle("Promedio de energia creada total vs Valor de cripto")+
+  ggtitle("Energia creada total vs Valor de cripto")+
   stat_smooth(aes(x = Avg_amount, y = Avg_Value),method = "lm",
               formula = y ~ x,
               geom = "smooth")+
@@ -200,13 +203,14 @@ power_total_volume <-power_total_volume_df %>%
   ggplot() +
   geom_point(aes(x = Avg_amount, y = Volume),color="dark blue") + 
   labs(y="Volumen de transacciones promedio", x="Energia Consumida total")+
-  ggtitle("Promedio de energia creada total vs Volumen de transacciones")+
+  ggtitle("Energia creada total vs Volumen de transacciones")+
   stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
               formula = y ~ x,
               geom = "smooth")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
 #Correlation---------------------------------------------------------
+
 cor(power_value_df$Avg_Value,power_value_df$Avg_amount)
 cor(power_volume_df$Volume,power_volume_df$Avg_amount)
 
@@ -215,8 +219,3 @@ cor(power_total_volume_df$Volume,power_total_volume_df$Avg_amount)
 
 # Check  ----------------------------------------------------------
 
-# value
-# power
-# volumen
-# power_value
-# power_volume
