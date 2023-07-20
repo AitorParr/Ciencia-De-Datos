@@ -263,12 +263,14 @@ power_total_volume <-power_total_volume_df %>%
               geom = "smooth")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 
-
-
-power_bt_power <-power_bt_power_total_df  %>%  
+power_bt_power <- power_bt_power_total_df  %>%  
   ggplot() +
-  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="magenta") +
-  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_Energy),color="purple") 
+  labs(y="Energia Creada/Consumida", x="Años")+
+  ggtitle("Energia creada  vs Energia Requerida por la cripto")+
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount,color="power")) +
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_Energy,color="power cripto")) +
+  scale_color_manual(name="Fuente de poder",breaks=c('power','power cripto'),values = c('power'='magenta','power cripto'='purple'))+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
   
 
 #Correlation---------------------------------------------------------
