@@ -184,7 +184,7 @@ ncol(power_df)
 
 value <- value_df_summary %>% 
   ggplot() +
-  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="black",fill="red")+ 
+  geom_line(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="red")+ 
   labs(y="Valor Promedio de las criptomonedas(USD)", x="Años")+
   ggtitle("Promedio del valor de las crypto monedas por año ")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
@@ -192,7 +192,7 @@ value <- value_df_summary %>%
 
 volumen <- volumen_df_summary %>%  
   ggplot() +
-  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="black",fill="green") + 
+  geom_line(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="green") + 
   labs(y="Volumen Promedio de transacciones", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   scale_y_continuous(labels = function(x) format(x, scientific = TRUE))+
@@ -201,7 +201,7 @@ volumen <- volumen_df_summary %>%
 
 power <- power_df %>%  
   ggplot() +
-  geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="yellow") + 
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="yellow") + 
   labs(y="Energia Generada por Combustibles", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Energia creada con fuentes combustibles por año")+
@@ -209,7 +209,7 @@ power <- power_df %>%
 
 power_bt <- power_bt_df_summary %>%  
   ggplot() +
-  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Energy),color="black",fill="purple") + 
+  geom_line(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Energy),color="purple") + 
   labs(y="Energia Consumida por BT", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Energia consumida por BT")+
@@ -217,7 +217,7 @@ power_bt <- power_bt_df_summary %>%
 
 power_total <- power_df_total %>%  
   ggplot() +
-  geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="magenta") + 
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="magenta") + 
   labs(y="Energia  Generada ", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Energia creada por año")+
@@ -248,6 +248,7 @@ power_total_value <-power_total_value_df %>%
   geom_point(aes(x = Avg_amount, y = Avg_Value),color="dark green") + 
   labs(y="Valor de cripto promedio", x="Energia Consumida total")+
   ggtitle("Energia creada total vs Valor de cripto")+
+  scale_y_continuous(trans='log2')+
   stat_smooth(aes(x = Avg_amount, y = Avg_Value),method = "lm",
               formula = y ~ x,
               geom = "smooth")+
@@ -256,8 +257,9 @@ power_total_value <-power_total_value_df %>%
 power_total_volume <-power_total_volume_df %>%  
   ggplot() +
   geom_point(aes(x = Avg_amount, y = Volume),color="dark blue") + 
-  labs(y="Volumen de transacciones promedio", x="Energia Consumida total")+
+  labs(y="Volumen de transacciones promedio (Log2)", x="Energia Consumida total")+
   ggtitle("Energia creada total vs Volumen de transacciones")+
+  scale_y_continuous(trans='log2')+
   stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
               formula = y ~ x,
               geom = "smooth")+
@@ -265,11 +267,12 @@ power_total_volume <-power_total_volume_df %>%
 
 power_bt_power <- power_bt_power_total_df  %>%  
   ggplot() +
-  labs(y="Energia Creada/Consumida", x="Años")+
-  ggtitle("Energia creada  vs Energia Requerida por la cripto")+
-  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount,color="power")) +
-  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_Energy,color="power cripto")) +
-  scale_color_manual(name="Fuente de poder",breaks=c('power','power cripto'),values = c('power'='magenta','power cripto'='purple'))+
+  labs(y="Energia Creada y Consumida (log2)", x="Años")+
+  ggtitle("Energia creada por paises de la IEA  vs Energia Requerida por la cripto")+
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount,color="Poder calculado")) +
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_Energy,color="Poder Requerido")) +
+  scale_y_continuous(trans='log2')+
+  scale_color_manual(name="Fuente de poder",breaks=c('Poder calculado','Poder Requerido'),values = c('Poder calculado'='orange','Poder Requerido'='blue'))+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
   
 
@@ -281,5 +284,4 @@ cor(power_volume_df$Volume,power_volume_df$Avg_amount)
 cor(power_total_value_df$Avg_Value,power_total_value_df$Avg_amount)
 cor(power_total_volume_df$Volume,power_total_volume_df$Avg_amount)
 
-# Check  ----------------------------------------------------------
 
