@@ -1,0 +1,420 @@
+---
+title: "Crecimiento del consumo de energia electrica por el uso de criptomonedas"
+author: "Moises Berrios, Diego De Sousa, Gabriela Machado, Aitor Parrilla"
+date: "2023-07-20"
+output: 
+  html_document: 
+    toc: true
+    toc_depth: 4
+    toc_float: true
+    collapsed: true
+    smooth_scroll: true
+    theme: journal
+    highlight: kate
+    df_print: paged
+    code_folding: show
+---
+# Introducción
+## Planteamiento del problema
+>El progresivo desarrollo tecnológico, particularmente en los últimos veinte años, ha tenido un gran impacto sobre la biósfera y la sociedad en general. Ahora que nos encontramos ante la transición del dinero físico al dinero digital, es preciso evaluar las consecuencias de un cambio tan significativo. 
+>Lo cierto es que, si bien las criptomonedas brindan la oportunidad de acceder a un sistema transparente, descentralizado y seguro para efectuar transacciones, también representan un importante elemento a considerar cuando nos referimos al aumento del consumo eléctrico mundial.
+>De acuerdo a la Oficina de Política, Ciencia y Tecnología (2022), perteneciente al departamento del gobierno de los Estados Unidos:
+>
+>>*Casi todo el consumo de electricidad de los cripto activos es impulsado por los mecanismos de consenso: la tecnología de contabilidad distribuida (DLT) utilizada para minar y verificar los cripto activos. El mecanismo de consenso dominante se llama Prueba de Trabajo (PoW), que es utilizado por las cadenas de bloques Bitcoin y Ethereum. Bitcoin y Ether combinados representan más del 60% de la capitalización total del mercado de los cripto activos. El mecanismo PoW está diseñado para requerir más poder de cómputo a medida que más entidades intentan validar transacciones para obtener una pequeña comisión en monedas, y esta característica ayuda a desincentivar a los actores malintencionados de atacar la red. A partir de agosto de 2022, se estima que Bitcoin representa del 60% al 77% del consumo total de electricidad de los cripto activos a nivel mundial, y Ethereum representa del 20% al 39%.*
+>
+>El impacto ambiental de estos cripto activos no es un factor que la mayoría de las personas consideran al momento de invertir, sin embargo, esto se debe en gran medida al desconocimiento y lo poco tangible que resulta dicho fenómeno. Asimismo, existen pocas fuentes que permitan establecer una relación entre el consumo eléctrico y las muchas criptomonedas en existencia; afectando la percepción real de las dimensiones del problema.
+
+## Relevancia del proyecto
+La orientación al progreso y al desarrollo tecnológico son dos aspectos que caracterizan a la sociedad contemporánea, no obstante, esto constituye un problema cuando se desestima el impacto ambiental de sus hazañas. A pesar de que las ventajas de las transacciones con criptomonedas son muchas y representan el futuro de la economía mundial, el alto costo energético y las crecientes emisiones de carbono son imposibles de ignorar. En tal sentido, es preciso tomar conciencia, adoptar alternativas y realizar mejoras. El presente proyecto pretende dar un primer paso, aportando una visualización clave del problema que motive al usuario a seguir investigando y a tomar decisiones más conscientes al momento de invertir en activos digitales.
+
+## Interrogantes a evaluar
+- ¿Cómo han aumentado las transacciones?
+
+# Metodología
+Se definen en este apartado, las metricas a usar, la recopilacion, carga, procesamiento, almacenamiento, limpieza y visualizacion de los datos a usar en este trabajo. 
+
+## Métricas
+Se utilizaron las siguientes librerías de R:
+
+- gridExtra: permite combinar y organizar gráficos realizados con el paquete ggplot2, capaz de organizar y combinar múltiples gráficos para crear diseños personalizados en RMarkdown
+- tidiverse: Es una colección de paquetes de R diseñados para trabajar de manera conjunta y proporcionar una interfaz coherente y eficiente para el análisis de datos.  Incluye paquetes como dplyr,  que proporciona funciones para la manipulación de datos de forma rápida y sencilla. con verbos como filter, select, mutate, arrange y group_by para realizar operaciones comunes en tablas de datos. 
+- ggplot2: Incluido en tidyverse, es una poderosa librería para crear gráficos elegantes y versátiles basados en la gramática de gráficos. Permite construir visualizaciones con facilidad y ofrece un alto nivel de personalización.
+- scales: parte del ecosistema ggplot2 y proporciona funciones para formatear y ajustar escalas de ejes y leyendas en gráficos creados con ggplot2
+- readxl: Permite la carga y lectura de archivos Excel
+- openxlsx: Permite modificacion y creacion de archivos Excel
+- zoo: "Z's Ordered Observations", herramienta que destaca su enfoque en el ordenamiento de observaciones y la manipulación de datos de series de tiempo.
+```{r librerias, message=FALSE}
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(scales)
+library(readxl)
+library(openxlsx)
+library(zoo)
+```
+## Recopilación de archivos
+De la recolección obtenida, se tuvo las siguientes descripciones para la data:
+
+- Histórico de precios de criptomonedas. Este dataset, obtenido de Kaggle, contiene información sobre las principales criptomonedas en el mercado actual. 
+- Energía producida mensualmente. IEA se dedica a publicar datos para aportar a la cooperación eléctrica internacional. Este dataset es actualizado constantemente e incluye a todos los países miembros de la  Organización para la Cooperación y Desarrollo Económico. 
+- Huella de carbono y consumo de energía del Bitcoin. Dicho dataset, contenido en el repositorio académico de ScienceDirect, recopila las emisiones de carbono relacionadas al Bitcoin desde el 2021. 
+```{r recopilacionArchivos, message=FALSE, warning=FALSE}
+coin_Aave <- read_csv("Dataframes/coin_Aave.csv")
+coin_BinanceCoin <- read_csv("Dataframes/coin_BinanceCoin.csv")
+coin_Bitcoin <- read_csv("Dataframes/coin_Bitcoin.csv")
+coin_Cardano <- read_csv("Dataframes/coin_Cardano.csv")
+coin_ChainLink <- read_csv("Dataframes/coin_ChainLink.csv")
+coin_Cosmos <- read_csv("Dataframes/coin_Cosmos.csv")
+coin_CryptocomCoin <- read_csv("Dataframes/coin_CryptocomCoin.csv")
+coin_Dogecoin <- read_csv("Dataframes/coin_Dogecoin.csv")
+coin_EOS <- read_csv("Dataframes/coin_EOS.csv")
+coin_Ethereum <- read_csv("Dataframes/coin_Ethereum.csv")
+coin_Iota <- read_csv("Dataframes/coin_Iota.csv")
+coin_Litecoin <- read_csv("Dataframes/coin_Litecoin.csv")
+coin_Monero <- read_csv("Dataframes/coin_Monero.csv")
+coin_NEM <- read_csv("Dataframes/coin_NEM.csv")
+coin_Polkadot <- read_csv("Dataframes/coin_Polkadot.csv")
+coin_Solana <- read_csv("Dataframes/coin_Solana.csv")
+coin_Stellar <- read_csv("Dataframes/coin_Stellar.csv")
+coin_Tether <- read_csv("Dataframes/coin_Tether.csv")
+coin_Tron <- read_csv("Dataframes/coin_Tron.csv")
+coin_USDCoin <- read_csv("Dataframes/coin_USDCoin.csv")
+coin_Uniswap <- read_csv("Dataframes/coin_Uniswap.csv")
+coin_WrappedBitcoin <- read_csv("Dataframes/coin_WrappedBitcoin.csv")
+coin_XRP <- read_csv("Dataframes/coin_XRP.csv")
+MES_0423 <- read_csv("Dataframes/MES_0423.csv")
+BTC_Footprints_v1 <- read_excel("Dataframes/BTC_Footprints_v1.xlsx")
+owid_co2_data <- read_excel("Dataframes/owid-co2-data.xlsx")
+```
+## Carga de archivos
+Se subió al vector, todos los nombres de archivos a utilizar en el proyecto
+```{r cargaArchivos, warning=FALSE}
+coins_ALL_Vector <- c(list(coin_Aave),
+                      list(coin_BinanceCoin),
+                      list(coin_Bitcoin),
+                      list(coin_Cardano),
+                      list(coin_ChainLink),
+                      list(coin_ChainLink),
+                      list(coin_Cosmos),
+                      list(coin_CryptocomCoin),
+                      list(coin_Dogecoin),
+                      list(coin_EOS),
+                      list(coin_Ethereum),
+                      list(coin_Iota),
+                      list(coin_Litecoin),
+                      list(coin_Monero),
+                      list(coin_NEM),
+                      list(coin_Polkadot),
+                      list(coin_Solana),
+                      list(coin_Stellar),
+                      list(coin_Tether),
+                      list(coin_Tron),
+                      list(coin_Uniswap),
+                      list(coin_USDCoin),
+                      list(coin_WrappedBitcoin),
+                      list(coin_XRP))
+```
+## Procesamiento y almacenamiento de archivos
+Procesamiento de los archivos, transformados a dataframes, con el conjunto de paquetes de tidyverse.
+```{r procesamientoArchivos, include=TRUE, warning=FALSE}
+COINS_ALL_DF <- data.frame()
+for (DF in coins_ALL_Vector) {
+  COINS_ALL_DF <- rbind(COINS_ALL_DF,DF)}
+COINS_ALL_DF <- COINS_ALL_DF %>% mutate(Date=as.yearmon(Date, format = "%y-%m-%d"))
+
+COINS_ALL_DF_VOL <- COINS_ALL_DF %>% 
+  group_by(Name) %>% 
+  summarise(Volume=sum(Volume)) 
+
+COINS_ALL_DF_VOL <- COINS_ALL_DF_VOL %>% mutate(Percentage = 100*Volume/sum(Volume))
+
+coins <- COINS_ALL_DF[COINS_ALL_DF$Name %in% c('Ethereum','Bitcoin','Tether'),]
+
+power_df <- MES_0423 
+names(power_df) <- power_df[8,]
+colnames(power_df)[5] <- "Amount"
+power_df <- power_df[-c(1:8),]
+power_df <- power_df %>%
+  mutate(Time = Time %>% 
+           str_replace_all(" ", "-"))
+power_df <- power_df %>% mutate(Time=as.yearmon(Time,"%b-%Y"))
+power_df <- power_df %>% 
+            filter(!(Country %in% c("IEA Total","OECD Americas","OECD Asia Oceania","OECD Europe","OECD Total"))) %>% 
+            filter(Product == "Total Combustible Fuels")
+```
+## Limpieza de los datos
+Utilizando la libreria de tidyverse, con el componente de dplyr y sus verbos, para la manipulacion de los datos, se realiza de la siguiente manera:
+```{r limpiezaArchivos, include=TRUE, message=FALSE}
+power_bt_df <- BTC_Footprints_v1
+
+## resolucion de fechas en distintos formatos
+power_bt_df_g <- dplyr::filter(power_bt_df, grepl('/', Date))
+power_bt_df_w <- dplyr::filter(power_bt_df, !grepl('/', Date))
+
+##tratado de fechas a numero
+power_bt_df_w$Date <- as.numeric(power_bt_df_w$Date)
+##vuelta de fecha a formato aceptado en Excel
+power_bt_df_w$Date <- as.Date(power_bt_df_w$Date,origin = "1899-12-30")
+
+##pase de formato year a month
+power_bt_df_g <- power_bt_df_g %>% mutate(Date=as.yearmon(Date,"%m/%d/%Y"))
+
+##arreglado char para que R se olvide del formato original en la que las tenia
+##arreglado fecha otra vez pero con distinto formato
+##arreglado yearmon (ambiguo)
+power_bt_df_w <- power_bt_df_w %>%
+  mutate(Date = Date %>% 
+           str_replace_all("-", "/"))
+power_bt_df_w <- power_bt_df_w %>% mutate(Date=as.character(Date))
+power_bt_df_w <- power_bt_df_w %>% mutate(Date=as.Date(Date,"%Y/%d/%m"))
+power_bt_df_w <- power_bt_df_w %>% mutate(Date=as.yearmon(Date))
+
+##Las fechas raras (Weird) + las fechas buenas (Good) = dataframe original
+power_bt_df <- rbind(power_bt_df_g,power_bt_df_w)
+
+
+##quitado lineas en blanco, nombrado a las columnas, quito aquellas cosas que no sean paises
+##formateado la fecha para que sea "yearmon"
+power_df_total <- MES_0423 
+names(power_df_total) <- power_df_total[8,]
+colnames(power_df_total)[5] <- "Amount"
+power_df_total <- power_df_total[-c(1:8),]
+power_df_total <- power_df_total %>%
+  mutate(Time = Time %>% 
+           str_replace_all(" ", "-"))
+power_df_total <- power_df_total %>% mutate(Time=as.yearmon(Time,"%b-%Y"))
+power_df_total <- power_df_total %>% 
+  filter(!(Country %in% c("IEA Total","OECD Americas","OECD Asia Oceania","OECD Europe","OECD Total"))) %>% 
+  filter(Product == "Electricity" & Balance == "Final Consumption (Calculated)")
+
+
+power_df <- power_df %>% 
+  group_by(Time,Product,Unit) %>% 
+  summarize(Avg_amount = sum(Amount))
+
+power_df_total <- power_df_total %>% 
+  group_by(Time,Product,Unit) %>% 
+  summarize(Avg_amount = sum(Amount))
+
+power_bt_df_summary <- power_bt_df %>% 
+  group_by(Date) %>%
+  summarize(Avg_Energy = (mean(BTCENEGUE)))
+
+value_df_summary <- coins %>% 
+  group_by(Date) %>%
+  summarize(Avg_Value = (mean(High)+mean(Low))/2)
+
+volumen_df_summary <- coins %>% 
+  group_by(Date)  %>%
+  summarize(Volume = mean(Volume))
+
+power_bt_power_total_df <- left_join(power_df_total,power_bt_df_summary,by=c("Time"="Date")) 
+
+power_value_df <- left_join(value_df_summary,power_df,by=c("Date"="Time"))
+
+power_volume_df <- left_join(volumen_df_summary,power_df,by=c("Date"="Time"))
+
+power_total_value_df <- left_join(value_df_summary,power_df_total,by=c("Date"="Time"))
+
+power_total_volume_df <- left_join(volumen_df_summary,power_df_total,by=c("Date"="Time"))
+```
+
+
+## Visualización
+
+Se visualiza un resumen de datos que contienen los dataframes
+```{r summary, include=TRUE}
+summary(COINS_ALL_DF)
+nrow(COINS_ALL_DF)
+ncol(COINS_ALL_DF)
+
+summary(power_df)
+nrow(power_df)
+ncol(power_df)
+```
+
+
+Con la libreria ggplot2, se realizan visualizaciones de distintos factores para su posterior analisis.
+```{r visualizacion2, include=TRUE}
+volumen <- volumen_df_summary %>%  
+  ggplot() +
+  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="black",fill="green") + 
+  labs(y="Volumen Promedio de transacciones", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE))+
+  ggtitle("Promedio de transacciones por año")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+volumen
+```
+
+
+```{r visualizacion4, include=TRUE}
+power_bt <- power_bt_df_summary %>%  
+  ggplot() +
+  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Energy),color="black",fill="purple") + 
+  labs(y="Energia Consumida por BT", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  ggtitle("Energia consumida por BT")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+power_bt
+```
+
+```{r visualizacion9, include=TRUE, warning=FALSE}
+power_bt_power <- power_bt_power_total_df  %>%  
+  ggplot() +
+  labs(y="Energia Creada/Consumida", x="Años")+
+  ggtitle("Energia creada  vs Energia Requerida por la cripto")+
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount,color="power")) +
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_Energy,color="power cripto")) +
+  scale_color_manual(name="Fuente de poder",breaks=c('power','power cripto'),values = c('power'='magenta','power cripto'='purple'))+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+power_bt_power
+```
+
+La energía requerida para realizar transacciones con criptomonedas, en este caso utilizando Bitcoin como referentes, supera la cantidad de energía total de energía generada por los 38 países de la  Organización para la Cooperación y Desarrollo Económico.Se visualiza un aparente alto valor de energia en los datos recolectados.
+
+# Análisis
+Se extraen los datos mas relevantes para el trabajo, graficándose con la ayuda de la libreria ggplot2, dando las siguientes visualizaciones para el analisis exploratorio:
+```{r visualizacion, include=TRUE}
+value <- value_df_summary %>% 
+  ggplot() +
+  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="black",fill="red")+ 
+  labs(y="Valor Promedio de las criptomonedas(USD)", x="Años")+
+  ggtitle("Promedio del valor de las crypto monedas por año ")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+value
+```
+
+Análisis Promedio del valor de las cripto monedas por año: Mencionado previamente, acerca de la facilidad de las transacciones como lo transparente, con el pasar del tiempo, aumente su demanda año tras año y viendo un gran salto de su valor comenzando el año de la pandemia (2019), marcando un antes  y un después. Que viene sumado a las políticas económicas que tomaron los gobiernos, que sus ciudadanos se quedaran en casa , obligando a buscar como defenderse en muchos aspectos.
+
+```{r visualizacion3, include=TRUE}
+power <- power_df %>%  
+  ggplot() +
+  geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="yellow") + 
+  labs(y="Energia Generada por Combustibles", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  ggtitle("Energia creada con fuentes combustibles por año")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+power
+```
+
+Análisis energía creada con fuentes combustibles por año: Se evidencia el alto consumo de energía por año por múltiples factores: mayor presencia de la tecnología en el hogar, la pandemia de COVID-19, el uso de cripto-activos, etc. 
+
+la popularidad que ha obtenido en el tiempo, el aumento de sus transacciones,la reinversión que tuvo que hacer las empresas para mantener su valor en el tiempo etc etc. mencionado todo esto refleja un alto consumo con el pasar de los año.
+
+```{r visualizacionn, include=TRUE}
+power_total <- power_df_total %>%  
+  ggplot() +
+  geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="magenta") + 
+  labs(y="Energia  Generada ", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  ggtitle("Energia creada por año")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+power_total
+```
+
+Análisis energía creada por año: En este análisis de esta gráfica se completa con energía creada con fuentes combustibles ya que llega a la misma conclusión e interpretación de los su respectivo análisis. Algo adicional sería que ese aumento de energía generada es producto de una reinversión por parte de las plataformas blockchain, llevando a un aumento tanto en la oferta como demanda de energía. Se evidencia el aumento de la producción de energía desde enero de 2010 hasta abril de 2023.
+
+```{r visualizacion5, include=TRUE}
+power_value <-power_value_df %>%  
+  ggplot() +
+  geom_point(aes(x = Avg_amount, y = Avg_Value),color="blue") + 
+  labs(y="Valor de cripto promedio", x="Energia Consumida")+
+  ggtitle("Energia creada por combustibles vs Valor de cripto promedio")+
+  stat_smooth(aes(x = Avg_amount, y = Avg_Value),method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+power_value
+```
+
+Análisis Energía creada por combustible vs valor de cripto promedio: En este gráfico podemos apreciar: en esta gráfica se puede apreciar una mediana correlación positiva entre las variables energía creada por combustible vs valor de cripto promedio. reflejado que a medida que crece el valor crece la energía consumida. 
+```{r visualizacion6, include=TRUE}
+power_volume <-power_volume_df %>%  
+  ggplot() +
+  geom_point(aes(x = Avg_amount, y = Volume),color="orange") + 
+  labs(y="Volumen de transacciones promedio", x="Energia Creada por combustibles")+
+  ggtitle("Energia creada por combustibles vs Volumen promedio de transacciones")+
+  stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+power_volume
+```
+
+Análisis Energía creada por combustible vs volumen promedio de cripto: Se aprecia una mediana correlación positiva entre las variables energía creada por combustible vs volumen de promedio de las transacciones, cabe destacar que los valores tienen un pequeño sesgo ya que pocos son los que se acerca a la media, arrojando datos que tienen mayor valor energía creada por combustibles que por el volumen de las transacciones.  
+
+```{r visualizacion7, include=TRUE}
+power_total_value <-power_total_value_df %>%  
+  ggplot() +
+  geom_point(aes(x = Avg_amount, y = Avg_Value),color="dark green") + 
+  labs(y="Valor de cripto promedio", x="Energia Consumida total")+
+  ggtitle("Energia creada total vs Valor de cripto")+
+  stat_smooth(aes(x = Avg_amount, y = Avg_Value),method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+power_total_value
+```
+
+Análisis del gráfico energía total vs valor de cripto: aquí se muestra una pequeña tendencia alza por ende existe una baja correlación positiva, un incremento en los datos por el eje x (energía consumida) que por el otro eje del eje y (valor promedio de las cripto promedio) 
+
+```{r visualizacion8, include=TRUE}
+power_total_volume <-power_total_volume_df %>%  
+  ggplot() +
+  geom_point(aes(x = Avg_amount, y = Volume),color="dark blue") + 
+  labs(y="Volumen de transacciones promedio", x="Energia Consumida total")+
+  ggtitle("Energia creada total vs Volumen de transacciones")+
+  stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+power_total_volume
+```
+
+Análisis del gráfico energía creada total vs volumen de transacciones:  aquí se muestra una débil correlación negativo level en esta gráfica, a su vez como los dato muestran un poco sesgo, mostrando datos con mucha energía consumida que el valor propio de sus transacciones
+
+A continuacion, se reflejan las diferentes correlaciones:
+```{r correlacion, include=TRUE}
+cor(power_value_df$Avg_Value,power_value_df$Avg_amount)
+cor(power_volume_df$Volume,power_volume_df$Avg_amount)
+
+cor(power_total_value_df$Avg_Value,power_total_value_df$Avg_amount)
+cor(power_total_volume_df$Volume,power_total_volume_df$Avg_amount)
+```
+
+## Preguntas
+¿Es posible buscar una reducción de las emisiones de carbono con el uso constante de las cripto-activos?
+Si, ya que hoy en día tanto los gobiernos como empresas de cripto-activos establecieron medidas,regulaciones y reformas para preservar el medio ambiente.
+
+¿A través de qué uso, cuáles son los instrumentos financieros que utilizarían para la reducción del daño ambiental?
+Bueno ante esta respuesta serian que las empresas de que prestan servicios de cripto-activos, y junto con las reformas de leyes medioambientales utilizaron parte de sus ganancias en pro de mejorar su eficiencia para reducir el daño ambiental a través de su consumo masivo de energía la ser utilizadas 
+
+¿Es de verdad preocupante el aumento masivo del uso de las cripto-activos para el medio ambiente?
+Si, debido a su impacto en los años recientes 
+¿Es cierto que ha aumentado el consumo de energía? 
+Si, ya que ante el aumento de su popularidad y lo transparente de su sistema, han hecho que varias personas y empresas ingresaran sus activos como refugio, eso ha llevado un aumento de su valor por ende ante ese escenario decidieron aumentar el consumo de energía ya sea para emitir cripto-activos más o preservar su valor en el mercado  
+
+# Conclusión
+## Principales hallazgos
+Regresando al grafico de Energia creada total vs Volumen de transacciones: 
+```{r visualizacionConclusiones, include=TRUE}
+power_total_volume
+```
+
+No existe una fuerte correlación entre el volúmen de transacciones y la energía generada. Esto puede deberse a que el dataset seleccionado no considera patrones de consumo energético ni las transacciones de criptomonedas.
+
+No parece existir  correlación entre el la energía creada y el volumen de transacciones. Puede deberse a que el uso de energía en la minería de criptomonedas se realiza en todo el mundo, y la cantidad de energía utilizada por los mineros puede variar significativamente según el país, la región y la fuente de energía utilizada. Asimismo, es posible que los países considerados en el dataset no sean los principales generadores de criptomonedas. 
+
+
+# Referencias 
+
+- [The White House. (2022, Septiembre 08). Climate and Energy Implications of Crypto-Assets in the United States.]( https://www.whitehouse.gov/ostp/news-updates/2022/09/08/fact-sheet-climate-and-energy-implications-of-crypto-assets-in-the-united-states/)
+- [Apraez Muñoz, J. J., Guaitarilla Moncayo, D. F., & Muñoz Gómez, C. A. (2022). Análisis del impacto ambiental por el consumo energético en la producción del bitcoin a nivel mundial. LOGINN Investigación Científica Y Tecnológica, 6(2).]( https://doi.org/10.23850/25907441.4800)
+- [Cryptocurrency Historical Prices | Kaggle](https://www.kaggle.com/datasets/sudalairajkumar/cryptocurrencypricehistory?resource=download)
+- [Energy Production and Consumption - Our World in Data](https://ourworldindata.org/energy-production-consumption)
+- [Monthly Electricity Statistics - Data product - IEA](https://www.iea.org/data-and-statistics/data-product/monthly-electricity-statistics)
+- [GitHub - owid/co2-data: Data on CO2 and greenhouse gas emissions by Our World in Data](https://github.com/owid/co2-data)
+- [Dataset on bitcoin carbon footprint and energy consumption](https://figshare.com/articles/dataset/Dataset_on_bitcoin_carbon_footprint_and_energy_consumption/19442933/1)
+- [GitHub: Proyecto de Ciencia de datos](https://github.com/AitorParr/Ciencia-De-Datos/tree/main)
