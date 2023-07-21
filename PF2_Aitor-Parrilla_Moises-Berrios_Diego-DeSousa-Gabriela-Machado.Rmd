@@ -15,6 +15,10 @@ output:
     code_folding: show
 ---
 # Introducción
+
+## Justificación del proyecto
+El presente trabajo, tuvo como objetivo, identificar si la minería, las transacciones de las criptomonedas y el valor de las mismas, con sus respectivos consumos de energía, están ejerciendo un aporte significativo en los graves problemas ecológicos que están sucediendo a nivel mundial, como el incremento de la huella de carbono, dado que, es imposible detener el uso creciente de las criptomonedas, por su facilidad de uso inmediato, rapidez, eficiencia, y descentralización automatizada del uso del mismo.
+
 ## Planteamiento del problema
 >El progresivo desarrollo tecnológico, particularmente en los últimos veinte años, ha tenido un gran impacto sobre la biósfera y la sociedad en general. Ahora que nos encontramos ante la transición del dinero físico al dinero digital, es preciso evaluar las consecuencias de un cambio tan significativo. 
 >Lo cierto es que, si bien las criptomonedas brindan la oportunidad de acceder a un sistema transparente, descentralizado y seguro para efectuar transacciones, también representan un importante elemento a considerar cuando nos referimos al aumento del consumo eléctrico mundial.
@@ -32,6 +36,9 @@ La orientación al progreso y al desarrollo tecnológico son dos aspectos que ca
 
 # Metodología
 Se definen en este apartado, las metricas a usar, la recopilacion, carga, procesamiento, almacenamiento, limpieza y visualizacion de los datos a usar en este trabajo. 
+
+## Justificación de la metodología
+La elaboración de un proyecto de informática requiere de una metodología adecuada que permita una planificación rigurosa y una fácil corrección y mantenimiento del proyecto, a lo largo de su ciclo de vida. Una metodología en etapas, es esencial para lograr estos objetivos. Incluyendo la recopilación y limpieza de datos, el procesamiento y almacenamiento de datos, el análisis de datos, la definición y uso de métricas, y la presentación de resultados. Cada una de estas etapas es esencial para el éxito del proyecto. El uso de métricas es importante, porque permite evaluar el desempeño del proyecto en términos cuantitativos y realizar mejoras continuas a lo largo del tiempo. Además, el uso de librerías de R como ggplot2, tidyverse, scales, readxl, openxlsx y zoo permite realizar análisis estadísticos y gráficos precisos y personalizados, que facilitan, el análisis, la interpretación los resultados, para identificar las respectivas relaciones entre datos trabajados y su posible solución.
 
 ## Métricas
 Se utilizaron las siguientes librerías de R:
@@ -223,41 +230,57 @@ power_total_volume_df <- left_join(volumen_df_summary,power_df_total,by=c("Date"
 ## Visualización
 
 Se visualiza un resumen de datos que contienen los dataframes
-```{r summary, include=TRUE}
+```{r summary1, include=TRUE}
 summary(COINS_ALL_DF)
-nrow(COINS_ALL_DF)
-ncol(COINS_ALL_DF)
+```
 
+Resumen estadístico arrojado, de la data de las criptomonedas 
+
+```{r nrowcoins, include=TRUE}
+nrow(COINS_ALL_DF)
+```
+
+Numero de filas totales para la data de las criptomonedas
+
+```{r ncolscoins, include=TRUE}
+ncol(COINS_ALL_DF)
+```
+
+Numero de columnas totales utilizadas para la data de las criptomonedas
+
+
+```{r summary2, include=TRUE}
 summary(power_df)
+```
+
+Resumen estadístico arrojado, de la data de energia recolectada de los distintos paises 
+
+```{r nrowpower, include=TRUE}
 nrow(power_df)
+```
+
+Numero de filas totales para la data de la energia registrada
+
+```{r ncolpower, include=TRUE}
 ncol(power_df)
 ```
 
+Numero de columnas totales utilizadas para la data de la energia registrada
 
 Con la libreria ggplot2, se realizan visualizaciones de distintos factores para su posterior analisis.
-```{r visualizacion2, include=TRUE}
-volumen <- volumen_df_summary %>%  
-  ggplot() +
-  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="black",fill="green") + 
-  labs(y="Volumen Promedio de transacciones", x="Años")+
-  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  scale_y_continuous(labels = function(x) format(x, scientific = TRUE))+
-  ggtitle("Promedio de transacciones por año")+
-  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
-volumen
-```
 
-
-```{r visualizacion4, include=TRUE}
+```{r visualizacion4, include=TRUE, warning=FALSE}
 power_bt <- power_bt_df_summary %>%  
   ggplot() +
-  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Energy),color="black",fill="purple") + 
+  geom_line(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Energy),color="purple",fill="purple") + 
   labs(y="Energia Consumida por BT", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Energia consumida por BT")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 power_bt
 ```
+
+**Figura 1: Energia consumida por BT** 
 
 ```{r visualizacion9, include=TRUE, warning=FALSE}
 power_bt_power <- power_bt_power_total_df  %>%  
@@ -266,19 +289,21 @@ power_bt_power <- power_bt_power_total_df  %>%
   ggtitle("Energia creada  vs Energia Requerida por la cripto")+
   geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount,color="power")) +
   geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_Energy,color="power cripto")) +
-  scale_color_manual(name="Fuente de poder",breaks=c('power','power cripto'),values = c('power'='magenta','power cripto'='purple'))+
+  scale_color_manual(name="Fuente de poder",breaks=c('energia creada total','energia requerida cripto'),values = c('power'='magenta','power cripto'='blue'))+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 power_bt_power
 ```
+
+**Figura 2: Energia creada  vs Energia Requerida por la cripto** 
 
 La energía requerida para realizar transacciones con criptomonedas, en este caso utilizando Bitcoin como referentes, supera la cantidad de energía total de energía generada por los 38 países de la  Organización para la Cooperación y Desarrollo Económico.Se visualiza un aparente alto valor de energia en los datos recolectados.
 
 # Análisis
 Se extraen los datos mas relevantes para el trabajo, graficándose con la ayuda de la libreria ggplot2, dando las siguientes visualizaciones para el analisis exploratorio:
-```{r visualizacion, include=TRUE}
+```{r visualizacion, include=TRUE, warning=FALSE}
 value <- value_df_summary %>% 
   ggplot() +
-  geom_col(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="black",fill="red")+ 
+  geom_line(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Avg_Value),color="red",fill="red")+ 
   labs(y="Valor Promedio de las criptomonedas(USD)", x="Años")+
   ggtitle("Promedio del valor de las crypto monedas por año ")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
@@ -286,12 +311,14 @@ value <- value_df_summary %>%
 value
 ```
 
+**Figura 3: Promedio del valor de las crypto monedas por año ** 
+
 Análisis Promedio del valor de las cripto monedas por año: Mencionado previamente, acerca de la facilidad de las transacciones como lo transparente, con el pasar del tiempo, aumente su demanda año tras año y viendo un gran salto de su valor comenzando el año de la pandemia (2019), marcando un antes  y un después. Que viene sumado a las políticas económicas que tomaron los gobiernos, que sus ciudadanos se quedaran en casa , obligando a buscar como defenderse en muchos aspectos.
 
-```{r visualizacion3, include=TRUE}
+```{r visualizacion3, include=TRUE, warning=FALSE}
 power <- power_df %>%  
   ggplot() +
-  geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="yellow") + 
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="black") + 
   labs(y="Energia Generada por Combustibles", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Energia creada con fuentes combustibles por año")+
@@ -299,14 +326,16 @@ power <- power_df %>%
 power
 ```
 
+**Figura 4: Energia creada con fuentes combustibles por año ** 
+
 Análisis energía creada con fuentes combustibles por año: Se evidencia el alto consumo de energía por año por múltiples factores: mayor presencia de la tecnología en el hogar, la pandemia de COVID-19, el uso de cripto-activos, etc. 
 
 la popularidad que ha obtenido en el tiempo, el aumento de sus transacciones,la reinversión que tuvo que hacer las empresas para mantener su valor en el tiempo etc etc. mencionado todo esto refleja un alto consumo con el pasar de los año.
 
-```{r visualizacionn, include=TRUE}
+```{r visualizacionn, include=TRUE, warning=FALSE}
 power_total <- power_df_total %>%  
   ggplot() +
-  geom_col(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="black",fill="magenta") + 
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount),color="magenta",fill="magenta") + 
   labs(y="Energia  Generada ", x="Años")+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   ggtitle("Energia creada por año")+
@@ -314,7 +343,25 @@ power_total <- power_df_total %>%
 power_total
 ```
 
+**Figura 5: Energia creada por año ** 
+
 Análisis energía creada por año: En este análisis de esta gráfica se completa con energía creada con fuentes combustibles ya que llega a la misma conclusión e interpretación de los su respectivo análisis. Algo adicional sería que ese aumento de energía generada es producto de una reinversión por parte de las plataformas blockchain, llevando a un aumento tanto en la oferta como demanda de energía. Se evidencia el aumento de la producción de energía desde enero de 2010 hasta abril de 2023.
+
+```{r visualizacion2, include=TRUE, warning=FALSE}
+volumen <- volumen_df_summary %>%  
+  ggplot() +
+  geom_line(aes(x = as.Date(Date,format = "%y-%m-%d"), y = Volume),color="darkgreen",fill="darkgreen") + 
+  labs(y="Volumen Promedio de transacciones", x="Años")+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE))+
+  ggtitle("Promedio de transacciones por año")+
+  theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
+volumen
+```
+
+**Figura 6: Promedio de transacciones por año ** 
+
+A medida que el tiempo a pasado las criptomonedas se han vuelto parte de la vida de muchos individuos y debido a los requerimientos energeticos de la criptomoneda esto podria ser un problema,
 
 ```{r visualizacion5, include=TRUE}
 power_value <-power_value_df %>%  
@@ -329,11 +376,18 @@ power_value <-power_value_df %>%
 power_value
 ```
 
+**Figura 7: Energia creada por combustibles vs Valor de cripto promedio ** 
+
+```{r visualizacion10, include=TRUE}
+cor(power_value_df$Avg_Value,power_value_df$Avg_amount)
+```
+Dando como correlacion entre valor de cripto promedio y energia consumida
+
 Análisis Energía creada por combustible vs valor de cripto promedio: En este gráfico podemos apreciar: en esta gráfica se puede apreciar una mediana correlación positiva entre las variables energía creada por combustible vs valor de cripto promedio. reflejado que a medida que crece el valor crece la energía consumida. 
 ```{r visualizacion6, include=TRUE}
 power_volume <-power_volume_df %>%  
   ggplot() +
-  geom_point(aes(x = Avg_amount, y = Volume),color="orange") + 
+  geom_point(aes(x = Avg_amount, y = Volume),color="darkorange") + 
   labs(y="Volumen de transacciones promedio", x="Energia Creada por combustibles")+
   ggtitle("Energia creada por combustibles vs Volumen promedio de transacciones")+
   stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
@@ -343,7 +397,13 @@ power_volume <-power_volume_df %>%
 power_volume
 ```
 
+**Figura 8: Energia creada por combustibles vs Volumen promedio de transacciones ** 
+
 Análisis Energía creada por combustible vs volumen promedio de cripto: Se aprecia una mediana correlación positiva entre las variables energía creada por combustible vs volumen de promedio de las transacciones, cabe destacar que los valores tienen un pequeño sesgo ya que pocos son los que se acerca a la media, arrojando datos que tienen mayor valor energía creada por combustibles que por el volumen de las transacciones.  
+```{r visualizacion14, include=TRUE}
+cor(power_volume_df$Volume,power_volume_df$Avg_amount)
+```
+Dando como correlacion entre volumen de transacciones promedio y energia creada por combustibles
 
 ```{r visualizacion7, include=TRUE}
 power_total_value <-power_total_value_df %>%  
@@ -358,7 +418,13 @@ power_total_value <-power_total_value_df %>%
 power_total_value
 ```
 
+**Figura 9: Energia creada total vs Valor de cripto ** 
+
 Análisis del gráfico energía total vs valor de cripto: aquí se muestra una pequeña tendencia alza por ende existe una baja correlación positiva, un incremento en los datos por el eje x (energía consumida) que por el otro eje del eje y (valor promedio de las cripto promedio) 
+```{r visualizacion12, include=TRUE}
+cor(power_total_value_df$Avg_Value,power_total_value_df$Avg_amount)
+```
+Dando como correlacion entre valor de cripto promedio y energia consumida total
 
 ```{r visualizacion8, include=TRUE}
 power_total_volume <-power_total_volume_df %>%  
@@ -373,16 +439,13 @@ power_total_volume <-power_total_volume_df %>%
 power_total_volume
 ```
 
+**Figura 10: Energia creada total vs Volumen de transacciones ** 
+
 Análisis del gráfico energía creada total vs volumen de transacciones:  aquí se muestra una débil correlación negativo level en esta gráfica, a su vez como los dato muestran un poco sesgo, mostrando datos con mucha energía consumida que el valor propio de sus transacciones
-
-A continuacion, se reflejan las diferentes correlaciones:
-```{r correlacion, include=TRUE}
-cor(power_value_df$Avg_Value,power_value_df$Avg_amount)
-cor(power_volume_df$Volume,power_volume_df$Avg_amount)
-
-cor(power_total_value_df$Avg_Value,power_total_value_df$Avg_amount)
+```{r visualizacion13, include=TRUE}
 cor(power_total_volume_df$Volume,power_total_volume_df$Avg_amount)
 ```
+Dando como correlacion entre el volumen de transacciones promedio y la energia consumida total
 
 ## Preguntas
 ¿Es posible buscar una reducción de las emisiones de carbono con el uso constante de las cripto-activos?
@@ -398,12 +461,7 @@ Si, ya que ante el aumento de su popularidad y lo transparente de su sistema, ha
 
 # Conclusión
 ## Principales hallazgos
-Regresando al grafico de Energia creada total vs Volumen de transacciones: 
-```{r visualizacionConclusiones, include=TRUE}
-power_total_volume
-```
-
-No existe una fuerte correlación entre el volúmen de transacciones y la energía generada. Esto puede deberse a que el dataset seleccionado no considera patrones de consumo energético ni las transacciones de criptomonedas.
+Regresando al grafico de la figura 10 (Energia creada total vs Volumen de transacciones), No existe una fuerte correlación entre el volúmen de transacciones y la energía generada. Esto puede deberse a que el dataset seleccionado no considera patrones de consumo energético ni las transacciones de criptomonedas:
 
 No parece existir  correlación entre el la energía creada y el volumen de transacciones. Puede deberse a que el uso de energía en la minería de criptomonedas se realiza en todo el mundo, y la cantidad de energía utilizada por los mineros puede variar significativamente según el país, la región y la fuente de energía utilizada. Asimismo, es posible que los países considerados en el dataset no sean los principales generadores de criptomonedas. 
 
