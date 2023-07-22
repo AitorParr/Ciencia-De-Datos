@@ -9,7 +9,7 @@ output:
     toc_float: true
     collapsed: true
     smooth_scroll: true
-    theme: journal
+    theme: lumen
     highlight: kate
     df_print: paged
     code_folding: show
@@ -32,7 +32,10 @@ El presente trabajo, tuvo como objetivo, identificar si la minería, las transac
 La orientación al progreso y al desarrollo tecnológico son dos aspectos que caracterizan a la sociedad contemporánea, no obstante, esto constituye un problema cuando se desestima el impacto ambiental de sus hazañas. A pesar de que las ventajas de las transacciones con criptomonedas son muchas y representan el futuro de la economía mundial, el alto costo energético y las crecientes emisiones de carbono son imposibles de ignorar. En tal sentido, es preciso tomar conciencia, adoptar alternativas y realizar mejoras. El presente proyecto pretende dar un primer paso, aportando una visualización clave del problema que motive al usuario a seguir investigando y a tomar decisiones más conscientes al momento de invertir en activos digitales.
 
 ## Interrogantes a evaluar
-- ¿Cómo han aumentado las transacciones?
+- ¿Es cierto que ha aumentado el consumo de energía?
+- ¿Se relaciona de alguna forma el volúmen de transacciones de criptomonedas con el consumo energético?
+- ¿Cómo se compara la demanda energética de las criptomonedas con la cantidad de energía eléctrica producida?
+
 
 # Metodología
 Se definen en este apartado, las metricas a usar, la recopilacion, carga, procesamiento, almacenamiento, limpieza y visualizacion de los datos a usar en este trabajo. 
@@ -285,16 +288,17 @@ power_bt
 ```{r visualizacion9, include=TRUE, warning=FALSE}
 power_bt_power <- power_bt_power_total_df  %>%  
   ggplot() +
-  labs(y="Energia Creada/Consumida", x="Años")+
-  ggtitle("Energia creada  vs Energia Requerida por la cripto")+
-  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount,color="power")) +
-  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_Energy,color="power cripto")) +
-  scale_color_manual(name="Fuente de poder",breaks=c('energia creada total','energia requerida cripto'),values = c('power'='magenta','power cripto'='blue'))+
+  labs(y="Energia Creada y Consumida (log2)", x="Años")+
+  ggtitle("Energia creada por paises de la IEA  vs Energia Requerida por la cripto")+
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_amount,color="Poder calculado")) +
+  geom_line(aes(x = as.Date(Time,format = "%y-%m-%d"), y = Avg_Energy,color="Poder Requerido")) +
+  scale_y_continuous(trans='log2')+
+  scale_color_manual(name="Fuente de poder",breaks=c('Poder calculado','Poder Requerido'),values = c('Poder calculado'='orange','Poder Requerido'='blue'))+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 power_bt_power
 ```
 
-**Figura 2: Energia creada  vs Energia Requerida por la cripto** 
+**Figura 2: Energia creada por paises de la IEA  vs Energia Requerida por la cripto** 
 
 La energía requerida para realizar transacciones con criptomonedas, en este caso utilizando Bitcoin como referentes, supera la cantidad de energía total de energía generada por los 38 países de la  Organización para la Cooperación y Desarrollo Económico.Se visualiza un aparente alto valor de energia en los datos recolectados.
 
@@ -411,11 +415,13 @@ power_total_value <-power_total_value_df %>%
   geom_point(aes(x = Avg_amount, y = Avg_Value),color="dark green") + 
   labs(y="Valor de cripto promedio", x="Energia Consumida total")+
   ggtitle("Energia creada total vs Valor de cripto")+
+  scale_y_continuous(trans='log2')+
   stat_smooth(aes(x = Avg_amount, y = Avg_Value),method = "lm",
               formula = y ~ x,
               geom = "smooth")+
   theme(axis.title=element_text(size=10,face="bold"),axis.text.x = element_text(size = 8,angle = 60))
 power_total_value
+
 ```
 
 **Figura 9: Energia creada total vs Valor de cripto ** 
@@ -430,8 +436,9 @@ Dando como correlacion entre valor de cripto promedio y energia consumida total
 power_total_volume <-power_total_volume_df %>%  
   ggplot() +
   geom_point(aes(x = Avg_amount, y = Volume),color="dark blue") + 
-  labs(y="Volumen de transacciones promedio", x="Energia Consumida total")+
+  labs(y="Volumen de transacciones promedio (Log2)", x="Energia Consumida total")+
   ggtitle("Energia creada total vs Volumen de transacciones")+
+  scale_y_continuous(trans='log2')+
   stat_smooth(aes(x = Avg_amount, y = Volume),method = "lm",
               formula = y ~ x,
               geom = "smooth")+
@@ -447,23 +454,23 @@ cor(power_total_volume_df$Volume,power_total_volume_df$Avg_amount)
 ```
 Dando como correlacion entre el volumen de transacciones promedio y la energia consumida total
 
-## Preguntas
-¿Es posible buscar una reducción de las emisiones de carbono con el uso constante de las cripto-activos?
-Si, ya que hoy en día tanto los gobiernos como empresas de cripto-activos establecieron medidas,regulaciones y reformas para preservar el medio ambiente.
-
-¿A través de qué uso, cuáles son los instrumentos financieros que utilizarían para la reducción del daño ambiental?
-Bueno ante esta respuesta serian que las empresas de que prestan servicios de cripto-activos, y junto con las reformas de leyes medioambientales utilizaron parte de sus ganancias en pro de mejorar su eficiencia para reducir el daño ambiental a través de su consumo masivo de energía la ser utilizadas 
-
-¿Es de verdad preocupante el aumento masivo del uso de las cripto-activos para el medio ambiente?
-Si, debido a su impacto en los años recientes 
-¿Es cierto que ha aumentado el consumo de energía? 
-Si, ya que ante el aumento de su popularidad y lo transparente de su sistema, han hecho que varias personas y empresas ingresaran sus activos como refugio, eso ha llevado un aumento de su valor por ende ante ese escenario decidieron aumentar el consumo de energía ya sea para emitir cripto-activos más o preservar su valor en el mercado  
-
 # Conclusión
-## Principales hallazgos
-Regresando al grafico de la figura 10 (Energia creada total vs Volumen de transacciones), No existe una fuerte correlación entre el volúmen de transacciones y la energía generada. Esto puede deberse a que el dataset seleccionado no considera patrones de consumo energético ni las transacciones de criptomonedas:
 
-No parece existir  correlación entre el la energía creada y el volumen de transacciones. Puede deberse a que el uso de energía en la minería de criptomonedas se realiza en todo el mundo, y la cantidad de energía utilizada por los mineros puede variar significativamente según el país, la región y la fuente de energía utilizada. Asimismo, es posible que los países considerados en el dataset no sean los principales generadores de criptomonedas. 
+## Principales hallazgos y aprendizaje de los datos
+- El volumen de transacciones de las criptomonedas seleccionadas -Bitcoin, Ethereum y Theter - se puede observar un aumento significativo desde el 2018, que continúa hasta mediados del 2021. La baja en las transacciones desde mediados del 2021 se le atribuye a la recesión económica en los países con mayor capacidad de inversión en criptomonedas.
+- La producción y, por ende, el consumo de energía no han variado de forma significativa en el periodo establecido para el análisis. En relación al uso de Bitcoin  (criptomoneda seleccionada como referencia) , el salto energético no se evidencia debido a que los países pertenecientes a la Organización para la Cooperación y Desarrollo Económico no son los principales generadores de Bitcoin, pese a que son usuarios de la misma. 
+- Los datos utilizados no reflejan una correlación visible entre la energía generada por los países de la OCDE y el volúmen de transacciones de criptomonedas a nivel mundial. Esto se debe a que los países pertenecientes a la organización no son los principales generadores de la energía que alimentan las transacciones de Bitcoin, Ethereum y Theter. 
+- La energía generada por los países de la Organización para la Cooperación y Desarrollo Económico es mucho menor que la energía que consume el Bitcoin (utilizada como principal referencia para el análisis). Esto se debe, una parte a la cantidad de energía regular generada por los miembros de la OCDE; y por otra parte el considerar la posibilidad de que en los países miembros de dicha organización no operan los mecanismos de consenso utilizados para generar Bitcoins, dadas las legislaciones y restricciones que existen para esta actividad. 
+- En cuanto al aprendizaje de datos, se debe hacer un analisis minucioso al momento de recolectar los datos, para poder tener un resultado, que pueda arrojar correlacion entre los datos, y poder determinar una solucion para dicha problemática.
+
+## Recomendaciones
+- Se recomienda a las organizaciones y países generar bases de datos más robustas que permitan realizar investigaciones y estudios comparativos para poder reflejar el impacto ambiental de industrias emergentes, como lo son las criptomonedas. 
+- A investigadores interesados en realizar estudios acerca del impacto ambiental de los cripto-activos, se sugiere incorporar o consultar  expertos u organizaciones especializadas en la materia que puedan realizar interpretaciones adecuadas de la data y sus respectivas relaciones entre las variables pertinentes.  
+
+## Limitaciones
+- Los países de la Organización para la Cooperación y Desarrollo Económico no son los principales responsables de generar criptomonedas, a pesar de que ello no limita el hecho de que sean usuarios de la misma. 
+- Los principales territorios generadores de cripto-activos como Rusia, Emiratos Árabes o América Latina no tienen políticas de transparencia que faciliten a agentes externos acceder a la data. Asimismo la operación de las maquinarias productoras de criptomonedas en muchas instancias funcionan en la clandestinidad y por ende, no existen registros. 
+
 
 
 # Referencias 
